@@ -6,26 +6,24 @@
 //const routeHandler = require('../lib/');
 
 // create route container
-const route = {};
-
-// defining a request router
-route.router = {
-	'ping': route.ping
-	// 'users': handlers.users,
-	// 'index': handlers.index,
-	// 'example/error': handlers.exampleError
-};
+const router = {};
 
 // ping handler
-route.ping = (data, cb) => {
+router.ping = (data, cb) => {
 	console.log('------ping----------', data);
 	// callback http status code and payload object
 	cb(200);
 };
 
-route.notFound = (data, cb) => {
+router.notFound = (data, cb) => {
+	console.log('-----notFound------');
 	cb(404);
 };
 
+// defining a request router
+router.routes = {
+	'ping': router.ping
+};
+
 // export route module
-module.exports = route;
+module.exports = router;

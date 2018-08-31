@@ -3,6 +3,8 @@
 *
 */
 
+'use strict';
+
 // Dependencies
 const http = require('http');
 const https = require('https');
@@ -12,7 +14,7 @@ const fs = require('fs');
 // const handlers = require('./lib/handler');
 const helpers = require('./utils/utils');
 const util = require('util');
-const router = require('./routes');
+const router = require('./routes/index');
 const debug = util.debuglog('server');
 
 // create server container
@@ -63,7 +65,8 @@ server.unifiedServer = (req, res) => {
 		payload += decoder.end();
 
 		// choose handler this request should go else go to notFound
-		const chooseHandler = typeof (router.router[trimmedPath]) !== 'undefined' ? router.router[trimmedPath] : router.notFound;
+		console.log('----trimmedPath-------', typeof (router.routes[trimmedPath]));
+		const chooseHandler = typeof (router.routes[trimmedPath]) !== 'undefined' ? router.routes[trimmedPath] : router.notFound;
 
 		// construct data object send to the handler
 		const data = {
@@ -76,6 +79,7 @@ server.unifiedServer = (req, res) => {
 
 		try {
 			chooseHandler(data, (statusCode, payload, contentType) => {
+				console.log(data);
 				server.processHandlerResponse(res, method, trimmedPath, statusCode, payload, contentType);
 			});
 		} catch (error) {
