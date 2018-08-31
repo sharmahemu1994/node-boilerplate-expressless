@@ -31,7 +31,9 @@ router.ping = (data, cb) => {
 };
 
 router.notFound = (data, cb) => {
-	cb(404);
+	var err = new Error('Not Found');
+	err.status = 404;
+	cb(err);
 };
 
 // defining a request router

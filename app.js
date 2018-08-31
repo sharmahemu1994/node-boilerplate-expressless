@@ -19,6 +19,24 @@ const debug = util.debuglog('serverC');
 
 // create server container
 const app = {};
+const httpPort = normalizePort(process.env.PORT || '3000');
+const httpsPort = normalizePort(process.env.PORT || '3001');
+
+function normalizePort(val) {
+	var port = parseInt(val, 10);
+
+	if (isNaN(port)) {
+		// named pipe
+		return val;
+	}
+
+	if (port >= 0) {
+		// port number
+		return port;
+	}
+
+	return false;
+}
 
 // instinciating http server
 app.httpServer = http.createServer((req, res) => {
@@ -139,15 +157,55 @@ app.processHandlerResponse = (res, method, trimmedPath, statusCode, payload, con
 
 app.init = () => {
 	// start a server and ahave it listen to PORT 3000, where we can say it handles http server
-	app.httpServer.listen(3000, () => {
+	app.httpServer.listen(httpPort, () => {
 		console.log('http server is listening on port 3000');
 	});
 
 	// start the https server
-	app.httpsServer.listen(3001, () => {
+	app.httpsServer.listen(httpsPort, () => {
 		console.log('https server is listening on port 3001');
 	});
 };
 
+// Event listener for HTTP server "error" event.
+// Catches if server event got any error.
+const onError = (error) => {
+	if (error.syscall !== 'listen') {
+		throw error;
+	}
+
+	var bind = typeof port === 'string'
+		? 'Pipe ' + port
+		: 'Port ' + port;
+
+	// handle specific listen errors with friendly messages
+	switch (error.code) {
+		case 'EACCES':
+			console.error(bind + ' requires elevated privileges');
+			process.exit(1);
+			break;
+		case 'EADDRINUSE':
+			console.error(bind + ' is already in use');
+			process.exit(1);
+			break;
+		default:
+			throw error;
+	}
+};
+
+// Event listener for HTTP server "listening" event.
+const onListening = () => {
+	var addr = app.httpServer.address();
+	var addr2 = app.httpsServer.address();
+	var bind = typeof addr === 'string'
+		? 'pipe ' + addr + 'Https' + addr2
+		: 'port ' + addr.port + 'Https' + addr2.port;
+	debug('Listening on ' + bind);
+}
+
+app.httpServer.on('error', onError);
+app.httpsServer.on('error', onError);
+app.httpServer.on('listening', onListening);
+app.httpsServer.on('listening', onListening);
 // export modules
 module.exports = app;
