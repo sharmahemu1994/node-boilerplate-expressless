@@ -11,20 +11,14 @@ const https = require('https');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
-// const handlers = require('./lib/handler');
 const helpers = require('./utils/utils');
 const util = require('util');
 const router = require('./routes/index');
 const debug = util.debuglog('serverC');
 
-// create server container
-const app = {};
-const httpPort = normalizePort(process.env.PORT || '3000');
-const httpsPort = normalizePort(process.env.PORT || '3001');
-
-function normalizePort(val) {
-	var port = parseInt(val, 10);
-
+// function to normalize a PORT into a number sting or false
+const normalizePort = (val) => {
+	let port = parseInt(val, 10);
 	if (isNaN(port)) {
 		// named pipe
 		return val;
@@ -34,9 +28,14 @@ function normalizePort(val) {
 		// port number
 		return port;
 	}
-
 	return false;
-}
+};
+
+const httpPort = normalizePort(process.env.PORT || '3000');
+const httpsPort = normalizePort(process.env.PORT || '3001');
+
+// create server container
+const app = {};
 
 // instinciating http server
 app.httpServer = http.createServer((req, res) => {
@@ -81,7 +80,7 @@ app.unifiedServer = (req, res) => {
 
 	req.on('end', () => {
 		payload += decoder.end();
-
+		console.log('-------router.routes[trimmedPath]------', router.routes[trimmedPath]);
 		// choose handler this request should go else go to notFound
 		const chooseHandler = typeof (router.routes[trimmedPath]) !== 'undefined' ? router.routes[trimmedPath] : router.notFound;
 
@@ -174,18 +173,21 @@ const onError = (error) => {
 		throw error;
 	}
 
-	var bind = typeof port === 'string'
-		? 'Pipe ' + port
-		: 'Port ' + port;
+	const bind = typeof httpPort === 'string'
+		? 'Pipe ' + httpPort
+		: 'Port ' + httpPort;
+	const bind2 = typeof httpsPort === 'string'
+		? 'Pipe ' + httpsPort
+		: 'Port ' + httpsPort;
 
 	// handle specific listen errors with friendly messages
 	switch (error.code) {
 		case 'EACCES':
-			console.error(bind + ' requires elevated privileges');
+			console.error(bind + ' requires elevated privileges or' + bind2 + ' requires elevated privileges');
 			process.exit(1);
 			break;
 		case 'EADDRINUSE':
-			console.error(bind + ' is already in use');
+			console.error(bind + ' is already in use or' + + bind2 + ' is already in use');
 			process.exit(1);
 			break;
 		default:
@@ -195,13 +197,13 @@ const onError = (error) => {
 
 // Event listener for HTTP server "listening" event.
 const onListening = () => {
-	var addr = app.httpServer.address();
-	var addr2 = app.httpsServer.address();
-	var bind = typeof addr === 'string'
+	const addr = app.httpServer.address();
+	const addr2 = app.httpsServer.address();
+	const bind = typeof addr === 'string'
 		? 'pipe ' + addr + 'Https' + addr2
 		: 'port ' + addr.port + 'Https' + addr2.port;
 	debug('Listening on ' + bind);
-}
+};
 
 app.httpServer.on('error', onError);
 app.httpsServer.on('error', onError);

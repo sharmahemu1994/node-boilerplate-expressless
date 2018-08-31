@@ -31,9 +31,13 @@ router.ping = (data, cb) => {
 };
 
 router.notFound = (data, cb) => {
-	var err = new Error('Not Found');
-	err.status = 404;
-	cb(err);
+	helpers.getTempalte('error', (err, str) => {
+		if (!err) {
+			cb(404, str, 'html');
+		} else {
+			cb(500, undefined, 'html');
+		}
+	});
 };
 
 // defining a request router
