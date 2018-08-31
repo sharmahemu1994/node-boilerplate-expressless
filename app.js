@@ -13,8 +13,8 @@ const stringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
 const helpers = require('./utils/utils');
 const util = require('util');
+const debug = util.debuglog('server');
 const router = require('./routes/index');
-const debug = util.debuglog('serverC');
 
 // function to normalize a PORT into a number sting or false
 const normalizePort = (val) => {

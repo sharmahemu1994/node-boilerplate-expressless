@@ -3,7 +3,6 @@
  */
 
 // Dependencies
-//const routeHandler = require('../lib/');
 const helpers = require('../utils/utils');
 
 // create route container

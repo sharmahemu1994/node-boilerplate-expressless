@@ -5,10 +5,9 @@
  */
 
 // Dependencies
-
-const app = require('./app');
 const cluster = require('cluster');
 const os = require('os');
+const app = require('./app');
 
 // container for app
 const server = {};
