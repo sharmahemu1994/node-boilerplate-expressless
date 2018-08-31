@@ -1,7 +1,7 @@
 /**
  * primary file to start server
  * calls server js and other background scripts js which are supposed to run in background
- * 
+ *
  */
 
 // Dependencies
@@ -16,19 +16,22 @@ const app = {};
 // Init function
 
 app.init = () => {
-    if (cluster.isMaster) {
-        // calls other background process which are supposed to run on one core only
-            //example.init();
-        // fork the process
-        for (let i = 0; i < os.cpus().length; i++) {
-            cluster.fork();
-        }
-    } else {
-        // if we are not on the master thread
-        // start server
-        server.init();
-    }
+	server.init();
 
+	// To create clusters for enhancement of server performance
+	// if (cluster.isMaster){
+	// 	// calls other background process which are supposed to run on one core only
+	// 	//example.init();
+
+	// 	// fork the process
+	// 	for (let i = 0; i < os.cpus().length; i++) {
+	// 		cluster.fork();
+	// 	}
+	// } else {
+	// 	// if we are not on the master thread
+	// 	// start server
+	// 	server.init();
+	// }
 };
 
 // execute init function
