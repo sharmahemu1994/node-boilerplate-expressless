@@ -6,20 +6,21 @@
 
 // Dependencies
 
-const server = require('./app');
+const app = require('./app');
 const cluster = require('cluster');
 const os = require('os');
 
 // container for app
-const app = {};
+const server = {};
 
 // Init function
 
-app.init = () => {
-	server.init();
+server.init = () => {
+	// To run server without clustering
+	app.init();
 
-	// To create clusters for enhancement of server performance
-	// if (cluster.isMaster){
+	// To run server with clustering
+	// if (cluster.isMaster) {
 	// 	// calls other background process which are supposed to run on one core only
 	// 	//example.init();
 
@@ -35,7 +36,7 @@ app.init = () => {
 };
 
 // execute init function
-app.init();
+server.init();
 
 // export module
-module.exports = app;
+module.exports = server;
