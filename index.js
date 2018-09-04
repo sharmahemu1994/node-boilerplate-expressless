@@ -5,8 +5,8 @@
  */
 
 // Dependencies
-const cluster = require('cluster');
-const os = require('os');
+// const cluster = require('cluster');
+// const os = require('os');
 const app = require('./app');
 
 // container for app
